@@ -10,4 +10,9 @@ public class BlogController {
   public String index() {
     return "index";
   }
+
+  @GetMapping("/blog/saveForm")
+  public String saveForm() {
+    return "/blog/saveForm";
+  }
 }
