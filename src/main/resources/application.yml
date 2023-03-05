@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    password: nabongbonge
+    username: dkagh12!@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/springblog?serverTimezone=Asia/Seoul
