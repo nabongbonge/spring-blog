@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class BlogService {
 
@@ -19,4 +21,7 @@ public class BlogService {
     blogRepository.save(blog);
   }
 
+  public List<Blog> getArticles() {
+    return blogRepository.findAll();
+  }
 }
