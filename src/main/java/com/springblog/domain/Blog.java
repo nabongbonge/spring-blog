@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -22,6 +23,7 @@ public class Blog {
 
   @Id
   @GeneratedValue(strategy =  IDENTITY)
+  @Column(name = "blogId")
   private int id;
 
   @Column(nullable = false, length = 100)
@@ -30,7 +32,7 @@ public class Blog {
   @Lob
   private String content;
 
-  @Column(columnDefinition = "0")
+  @ColumnDefault("0")
   private int count;
 
   @ManyToOne(fetch = EAGER)
@@ -38,7 +40,7 @@ public class Blog {
   private User user;
 
   @OneToMany(mappedBy = "blog", fetch = EAGER)
-  private List<Reply> replis;
+  private List<Reply> replies;
 
   @CreationTimestamp
   private Timestamp createDate;
