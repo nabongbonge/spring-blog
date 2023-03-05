@@ -1,6 +1,18 @@
 spring:
   datasource:
-    password: nabongbonge
-    username: dkagh12!@
+    password: dkagh12!@
+    username: nabongbonge
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/springblog?serverTimezone=Asia/Seoul
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+      naming:
+        # 변수명 그대로 사용
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
