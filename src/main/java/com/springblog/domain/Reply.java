@@ -20,6 +20,7 @@ public class Reply {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
+  @Column(name = "replyId")
   public int id;
 
   @ManyToOne
