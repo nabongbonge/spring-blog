@@ -13,6 +13,12 @@
       </div>
     </div>
     <br>
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled" th:if="${articles.first}"><a class="page-link" th:href="@{?page={previous}(previous=${articles.number-1})}">Previous</a></li>
+      <li class="page-item" th:unless="${articles.first}"><a class="page-link" th:href="@{?page={previous}(previous=${articles.number-1})}">Previous</a></li>
+      <li class="page-item disabled"><a class="page-link" th:if="${articles.last}" th:href="@{?page={next}(next=${articles.number+1})}">Next</a></li>
+      <li class="page-item"><a class="page-link" th:unless="${articles.last}" th:href="@{?page={next}(next=${articles.number+1})}">Next</a></li>
+    </ul>
   </div>
 </th:block>
 </html>
