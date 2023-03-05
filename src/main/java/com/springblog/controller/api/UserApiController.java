@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserApiController {
 
-  @Autowired 
+  @Autowired
   private UserService userService;
 
   @PostMapping("/auth/joinProc")
