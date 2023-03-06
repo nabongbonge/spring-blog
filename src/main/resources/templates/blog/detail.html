@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/default_layout">
+<!-- Page Content -->
+<th:block layout:fragment="content">
+  <div class="container">
+    <button class="btn btn-secondary" th:onclick="history.back()">돌아가기</button>
+    <button id="btn-update" class="btn btn-warning">수정</button>
+    <button id="btn-delete" class="btn btn-danger">삭제</button>
+    <br>
+    <br>
+    <div>
+      <h3 th:text="${blog.title}">제목</h3>
+    </div>
+    <hr>
+    <div th:utext="${blog.content}">내용</div>
+    <hr>
+  </div>
+  <script>
+    $('.summernote').summernote({
+      // placeholder: 'Hello Bootstrap 4',
+      tabsize: 2,
+      height: 300
+    });
+  </script>
+  <script src="/js/blog/blog.js"></script>
+</th:block>
+</html>

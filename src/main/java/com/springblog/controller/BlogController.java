@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import static org.springframework.data.domain.Sort.Direction.*;
 
@@ -27,5 +28,11 @@ public class BlogController {
   @GetMapping("/blog/saveForm")
   public String saveForm() {
     return "/blog/saveForm";
+  }
+
+  @GetMapping("/blog/{id}")
+  public String findById(@PathVariable int id, Model model) {
+    model.addAttribute("blog", blogService.getDetail(id));
+    return "/blog/detail";
   }
 }
