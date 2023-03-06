@@ -3,6 +3,10 @@ let index = {
     $("#btn-save").on("click",()=>{
       this.save();
     });
+
+    $("#btn-delete").on("click", () => {
+      this.deleteById();
+    });
   },
   save: function () {
     let data = {
@@ -12,7 +16,7 @@ let index = {
 
     $.ajax({
       type : "POST",
-      url : "/api/board",
+      url : "/api/blog",
       data : JSON.stringify(data),
       contentType: "application/json; charset=tuf-8",
       dataType:"json"
@@ -22,7 +26,20 @@ let index = {
     }).fail(function (error){
       alert(JSON.stringify(error));
     });
-  }
+  },
+  deleteById: function () {
+    const id = $("#id").text();
+    $.ajax({
+      type: "DELETE",
+      url: "/api/blog/".concat(id),
+      dataType: "json"
+    }).done(function (resp) {
+      alert("삭제가 완료 되었습니다.");
+      location.href = "/";
+    }).fail(function (error) {
+      alert(JSON.stringify(error));
+    });
+  },
 }
 
 index.init();

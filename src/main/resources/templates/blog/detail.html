@@ -7,9 +7,13 @@
   <div class="container">
     <button class="btn btn-secondary" th:onclick="history.back()">돌아가기</button>
     <button id="btn-update" class="btn btn-warning">수정</button>
-    <button id="btn-delete" class="btn btn-danger">삭제</button>
+    <button id="btn-delete" class="btn btn-danger" th:if="${#strings.equals(#authentication.principal.user.id, blog.user.id)}">삭제</button>
     <br>
     <br>
+    <div>
+      글 번호: <span id="id"><i th:text="${blog.id}"></i></span>
+      작성자: <span><i th:text="${blog.user.username}"></i></span>
+    </div>
     <div>
       <h3 th:text="${blog.title}">제목</h3>
     </div>
