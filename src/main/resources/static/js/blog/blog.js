@@ -7,6 +7,10 @@ let index = {
     $("#btn-delete").on("click", () => {
       this.deleteById();
     });
+
+    $("#btn-update").on("click", () => {
+      this.update();
+    });
   },
   save: function () {
     let data = {
@@ -20,7 +24,7 @@ let index = {
       data : JSON.stringify(data),
       contentType: "application/json; charset=tuf-8",
       dataType:"json"
-    }).done(function (resp){
+    }).done(function (){
       alert("글쓰기가 완료 되었습니다.");
       location.href = "/";
     }).fail(function (error){
@@ -33,13 +37,32 @@ let index = {
       type: "DELETE",
       url: "/api/blog/".concat(id),
       dataType: "json"
-    }).done(function (resp) {
+    }).done(function () {
       alert("삭제가 완료 되었습니다.");
       location.href = "/";
     }).fail(function (error) {
       alert(JSON.stringify(error));
     });
   },
+  update: function () {
+    const id = $("#id").val();
+    let data = {
+      title: $("#title").val(),
+      content: $("#content").val()
+    };
+    $.ajax({
+      type : "PUT",
+      url : "/api/blog/".concat(id),
+      data : JSON.stringify(data),
+      contentType: "application/json; charset=tuf-8",
+      dataType:"json"
+    }).done(function (){
+      alert("글수정이 완료 되었습니다.");
+      location.href = "/";
+    }).fail(function (error){
+      alert(JSON.stringify(error));
+    });
+  }
 }
 
 index.init();

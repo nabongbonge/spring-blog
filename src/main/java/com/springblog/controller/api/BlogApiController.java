@@ -4,6 +4,7 @@ import com.springblog.config.auth.PrincipalDetails;
 import com.springblog.domain.Blog;
 import com.springblog.dto.ResponseDto;
 import com.springblog.service.BlogService;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,12 @@ public class BlogApiController {
   @DeleteMapping("/api/blog/{id}")
   public ResponseDto<Integer> delete(@PathVariable int id) {
     blogService.delete(id);
+    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  }
+
+  @PutMapping("/api/blog/{id}")
+  public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Blog blog) {
+    blogService.update(id, blog);
     return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
   }
 }

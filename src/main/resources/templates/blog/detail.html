@@ -6,7 +6,8 @@
 <th:block layout:fragment="content">
   <div class="container">
     <button class="btn btn-secondary" th:onclick="history.back()">돌아가기</button>
-    <button id="btn-update" class="btn btn-warning">수정</button>
+    <a class="btn btn-warning" th:if="${#strings.equals(#authentication.principal.user.id, blog.user.id) }"
+       th:href="@{/blog/{id}/updateForm(id=${blog.id})}">수정</a>
     <button id="btn-delete" class="btn btn-danger" th:if="${#strings.equals(#authentication.principal.user.id, blog.user.id)}">삭제</button>
     <br>
     <br>

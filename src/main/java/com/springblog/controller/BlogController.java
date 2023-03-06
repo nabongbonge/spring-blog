@@ -35,4 +35,10 @@ public class BlogController {
     model.addAttribute("blog", blogService.getDetail(id));
     return "/blog/detail";
   }
+
+  @GetMapping("/blog/{id}/updateForm")
+  public String updateForm(@PathVariable int id, Model model) {
+    model.addAttribute("blog", blogService.getDetail(id));
+    return "/blog/updateForm";
+  }
 }

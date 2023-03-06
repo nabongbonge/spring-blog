@@ -36,4 +36,11 @@ public class BlogService {
   public void delete(int id) {
     blogRepository.deleteById(id);
   }
+
+  @Transactional
+  public void update(int id, Blog requestBlog) {
+    Blog findBlog = blogRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("글 찾기 실패 : 아이디를 찾을 수 없습니다."));
+    findBlog.setTitle(requestBlog.getTitle());
+    findBlog.setContent(requestBlog.getContent());
+  }
 }
