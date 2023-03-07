@@ -2,6 +2,7 @@ package com.springblog.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springblog.config.auth.PrincipalDetails;
 import com.springblog.config.auth.PrincipalDetailsService;
 import com.springblog.domain.User;
 import com.springblog.dto.KakaoProfile;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -108,10 +110,10 @@ public class UserController {
     }
 
     User kakaoUser = User.builder()
-//            .username(kakaoProfile.getKakaoAccount().getEmail() + "_" + kakaoProfile.getId())
-            .username(kakaoProfile.getKakaoAccount().getEmail())
+            .username(kakaoProfile.getKakaoAccount().getEmail() + "_" + kakaoProfile.getId())
             .password("dkagh12")
             .email(kakaoProfile.getKakaoAccount().getEmail())
+            .oauth("kakao")
             .build();
 
     User findUSer = userService.findUser(kakaoUser.getUsername());
