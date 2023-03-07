@@ -51,4 +51,9 @@ public class UserService {
     Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
   }
+
+  @Transactional(readOnly = true)
+  public User findUser(String username) {
+    return userRepository.findByUsername(username).orElseGet(User::new);
+  }
 }
