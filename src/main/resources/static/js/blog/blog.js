@@ -22,7 +22,7 @@ let index = {
       type : "POST",
       url : "/api/blog",
       data : JSON.stringify(data),
-      contentType: "application/json; charset=tuf-8",
+      contentType: "application/json; charset=utf-8",
       dataType:"json"
     }).done(function (){
       alert("글쓰기가 완료 되었습니다.");
@@ -54,7 +54,7 @@ let index = {
       type : "PUT",
       url : "/api/blog/".concat(id),
       data : JSON.stringify(data),
-      contentType: "application/json; charset=tuf-8",
+      contentType: "application/json; charset=utf-8",
       dataType:"json"
     }).done(function (){
       alert("글수정이 완료 되었습니다.");

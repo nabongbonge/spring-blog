@@ -5,6 +5,10 @@ import com.springblog.domain.RoleType;
 import com.springblog.domain.User;
 import com.springblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,9 @@ public class UserService {
   @Autowired
   private BCryptPasswordEncoder encoder;
 
+  @Autowired
+  private AuthenticationManager authenticationManager;
+
   @Transactional
   public int join(User user) {
     try {
@@ -31,5 +38,17 @@ public class UserService {
       System.out.println("UserService:회원가입() : " + e.getMessage());
     }
     return -1;
+  }
+
+  @Transactional
+  public void update(User user) {
+    User findUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
+    findUser.setPassword(encoder.encode(user.getPassword()));
+    findUser.setEmail(user.getEmail());
+
+    // 세션 변경
+    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 }
