@@ -22,7 +22,7 @@ public class User {
   @Column(name = "userId")
   private int id;
 
-  @Column(unique = true, nullable = false, length = 30)
+  @Column(unique = true, nullable = false, length = 100)
   private String username;
 
   @Column(nullable = false, length = 100)
@@ -33,6 +33,8 @@ public class User {
 
   @Enumerated(EnumType.STRING)
   private RoleType role;
+
+  private String oauth; // kakao, google
 
   @CreationTimestamp
   private Timestamp createDate;
