@@ -42,6 +42,7 @@ public class Blog {
 
   @OneToMany(mappedBy = "blog", fetch = EAGER)
   @JsonIgnoreProperties({"blog", "user"})
+  @OrderBy("id desc")
   private List<Reply> replies;
 
   @CreationTimestamp
