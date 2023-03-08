@@ -1,5 +1,6 @@
 package com.springblog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,8 @@ public class Blog {
   private User user;
 
   @OneToMany(mappedBy = "blog", fetch = EAGER)
+  @JsonIgnoreProperties({"blog", "user"})
+  @OrderBy("id desc")
   private List<Reply> replies;
 
   @CreationTimestamp

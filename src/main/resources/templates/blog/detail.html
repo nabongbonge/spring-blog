@@ -21,6 +21,27 @@
     <hr>
     <div th:utext="${blog.content}">내용</div>
     <hr>
+    <div class="card">
+      <form>
+        <input type="hidden" id="userId" th:value="${#authentication.principal.user.id}">
+        <input type="hidden" id="blogId" th:value="${blog.id}">
+        <div class="card-body"><textarea id="reply-content" class="form-control" rows="1"></textarea></div>
+        <div class="card-footer"><button id="btn-reply-save" class="btn btn-primary">등록</button></div>
+      </form>
+    </div>
+    <br>
+    <div class="card">
+      <div class="card-header">댓글 리스트</div>
+      <ul id="reply-box" class="list-group">
+        <li th:id="'reply-'+${reply.id}" id="reply-1" class="list-group-item d-flex justify-content-between" th:each="reply : ${blog.replies}">
+          <div th:text="${reply.content}">댓글 내용입니다.</div>
+          <div class="d-flex">
+            <div class="font-italic" th:text="'작성자: '+ ${reply.user.username} + '&nbsp'">작성자: 이재석 &nbsp</div>
+            <button class="badge" th:onclick="index.replyDelete([[${blog.id}]],[[${reply.id}]])">삭제</button>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
   <script>
     $('.summernote').summernote({

@@ -2,6 +2,8 @@ package com.springblog.controller.api;
 
 import com.springblog.config.auth.PrincipalDetails;
 import com.springblog.domain.Blog;
+import com.springblog.domain.Reply;
+import com.springblog.dto.ReplySaveRequestDto;
 import com.springblog.dto.ResponseDto;
 import com.springblog.service.BlogService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -31,6 +33,19 @@ public class BlogApiController {
   @PutMapping("/api/blog/{id}")
   public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Blog blog) {
     blogService.update(id, blog);
+    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  }
+
+  @PostMapping("/api/blog/{blogId}/reply")
+  public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
+//    blogService.replyWrite(replySaveRequestDto);
+    blogService.replyWriteForNativeQuery(replySaveRequestDto);
+    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  }
+
+  @DeleteMapping("/api/blog/{blogId}/reply/{replyId}")
+  public ResponseDto<Integer> replyDelete(@PathVariable int replyId) {
+    blogService.replyDelete(replyId);
     return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
   }
 }
