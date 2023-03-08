@@ -11,6 +11,10 @@ let index = {
     $("#btn-update").on("click", () => {
       this.update();
     });
+
+    $("#btn-reply-save").on("click", () => {
+      this.replySave();
+    });
   },
   save: function () {
     let data = {
@@ -59,6 +63,27 @@ let index = {
     }).done(function (){
       alert("글수정이 완료 되었습니다.");
       location.href = "/";
+    }).fail(function (error){
+      alert(JSON.stringify(error));
+    });
+  },
+  replySave: function () {
+
+    const blogId = $("#blogId").val();
+
+    let data = {
+      content: $("#reply-content").val(),
+    }
+
+    $.ajax({
+      type : "POST",
+      url : `/api/blog/${blogId}/reply`,
+      data : JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType:"json"
+    }).done(function (){
+      alert("댓글쓰기가 완료 되었습니다.");
+      location.href = `/blog/${blogId}`;
     }).fail(function (error){
       alert(JSON.stringify(error));
     });
