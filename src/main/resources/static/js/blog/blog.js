@@ -87,6 +87,18 @@ let index = {
     }).fail(function (error){
       alert(JSON.stringify(error));
     });
+  },
+  replyDelete: function (blogId, replyId) {
+    $.ajax({
+      type: "DELETE",
+      url: `/api/blog/${blogId}/reply/${replyId}`,
+      dataType: "json"
+    }).done(function (resp){
+      alert("댓글 삭제가 완료 되었습니다.");
+      location.href = `/blog/${blogId}`;
+    }).fail(function (error){
+      alert(JSON.stringify(error));
+    });
   }
 }
 

@@ -42,4 +42,10 @@ public class BlogApiController {
     blogService.replyWriteForNativeQuery(replySaveRequestDto);
     return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
   }
+
+  @DeleteMapping("/api/blog/{blogId}/reply/{replyId}")
+  public ResponseDto<Integer> replyDelete(@PathVariable int replyId) {
+    blogService.replyDelete(replyId);
+    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  }
 }

@@ -76,4 +76,8 @@ public class BlogService {
     replyRepository.saveForNateiveQuery(replySaveRequestDto.getUserId()
             , replySaveRequestDto.getBlogId(), replySaveRequestDto.getContent());
   }
+
+  public void replyDelete(int replyId) {
+    replyRepository.deleteById(replyId);
+  }
 }
