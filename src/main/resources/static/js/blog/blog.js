@@ -69,21 +69,21 @@ let index = {
   },
   replySave: function () {
 
-    const blogId = $("#blogId").val();
-
     let data = {
+      userId: $("#userId").val(),
+      blogId: $("#blogId").val(),
       content: $("#reply-content").val(),
     }
 
     $.ajax({
       type : "POST",
-      url : `/api/blog/${blogId}/reply`,
+      url : `/api/blog/${data.blogId}/reply`,
       data : JSON.stringify(data),
       contentType: "application/json; charset=utf-8",
       dataType:"json"
     }).done(function (){
       alert("댓글쓰기가 완료 되었습니다.");
-      location.href = `/blog/${blogId}`;
+      location.href = `/blog/${data.blogId}`;
     }).fail(function (error){
       alert(JSON.stringify(error));
     });

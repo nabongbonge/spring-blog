@@ -3,8 +3,10 @@ package com.springblog.service;
 import com.springblog.domain.Blog;
 import com.springblog.domain.Reply;
 import com.springblog.domain.User;
+import com.springblog.dto.ReplySaveRequestDto;
 import com.springblog.repository.BlogRepository;
 import com.springblog.repository.ReplyRepository;
+import com.springblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,9 @@ public class BlogService {
 
   @Autowired
   private ReplyRepository replyRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @Transactional
   public void write(Blog blog, User user) {
@@ -50,12 +55,25 @@ public class BlogService {
   }
 
   @Transactional
-  public void replyWrite(User user, int blogId, Reply requestReply) {
-    Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패: 게시글 ID를 찾을 수 없습니다."));
+  public void replyWrite(ReplySaveRequestDto replySaveRequestDto) {
+    User user = userRepository.findById(replySaveRequestDto.getUserId())
+            .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패: 사용자 ID를 찾을 수 없습니다."));
 
-    requestReply.setUser(user);
-    requestReply.setBlog(blog);
+    Blog blog = blogRepository.findById(replySaveRequestDto.getBlogId())
+            .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패: 게시글 ID를 찾을 수 없습니다."));
 
-    replyRepository.save(requestReply);
+    Reply reply = Reply.builder()
+            .user(user)
+            .blog(blog)
+            .content(replySaveRequestDto.getContent())
+            .build();
+
+    replyRepository.save(reply);
+  }
+
+  @Transactional
+  public void replyWriteForNativeQuery(ReplySaveRequestDto replySaveRequestDto) {
+    replyRepository.saveForNateiveQuery(replySaveRequestDto.getUserId()
+            , replySaveRequestDto.getBlogId(), replySaveRequestDto.getContent());
   }
 }

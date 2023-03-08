@@ -3,6 +3,7 @@ package com.springblog.controller.api;
 import com.springblog.config.auth.PrincipalDetails;
 import com.springblog.domain.Blog;
 import com.springblog.domain.Reply;
+import com.springblog.dto.ReplySaveRequestDto;
 import com.springblog.dto.ResponseDto;
 import com.springblog.service.BlogService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -36,8 +37,9 @@ public class BlogApiController {
   }
 
   @PostMapping("/api/blog/{blogId}/reply")
-  public ResponseDto<Integer> replySave(@PathVariable int blogId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetails principal) {
-    blogService.replyWrite(principal.getUser(), blogId, reply);
+  public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
+//    blogService.replyWrite(replySaveRequestDto);
+    blogService.replyWriteForNativeQuery(replySaveRequestDto);
     return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
   }
 }
