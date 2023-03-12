@@ -13,7 +13,7 @@
           th:value="${#authentication.principal.user.username}" readonly>
       </div>
 
-      <div th:if="${#strings.isEmpty(#authentication.principal.user.oauth)}" class="form-group">
+      <div th:if="${#strings.isEmpty(#authentication.principal.user.loginType)}" class="form-group">
         <label for="password">Password</label>
         <input type="password" class="form-control" placeholder="Enter password" id="password">
       </div>
@@ -21,7 +21,7 @@
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" class="form-control" placeholder="Enter email" id="email"
-          th:value="${#authentication.principal.user.email}" th:readonly="${not #strings.isEmpty(#authentication.principal.user.oauth)}">
+          th:value="${#authentication.principal.user.email}" th:readonly="${not #strings.isEmpty(#authentication.principal.user.loginType)}">
       </div>
     </form>
     <button id="btn-update" class="btn btn-primary">회원수정완료</button>

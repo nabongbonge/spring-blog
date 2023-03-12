@@ -1,9 +1,12 @@
 package com.springblog.service;
 
 
-import com.springblog.domain.RoleType;
+import com.springblog.domain.type.RoleType;
 import com.springblog.domain.User;
+import com.springblog.dto.UserDto;
+import com.springblog.execption.NotFoundUserException;
 import com.springblog.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,9 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -28,36 +31,40 @@ public class UserService {
   private AuthenticationManager authenticationManager;
 
   @Transactional
-  public int join(User user) {
+  public User join(UserDto userDto) {
     try {
-      user.setPassword(encoder.encode(user.getPassword()));
-      user.setRole(RoleType.USER);
-      userRepository.save(user);
-      return 1;
+      userDto.setPassword(encoder.encode(userDto.getPassword()));
+      userDto.setRole(RoleType.USER);
+      User user = userDto.toEntity();
+      return userRepository.save(user);
     } catch (Exception e) {
       e.printStackTrace();
-      System.out.println("UserService:회원가입() : " + e.getMessage());
+      log.error("UserService:회원가입() : ", e.getMessage());
     }
-    return -1;
+    return null;
   }
 
   @Transactional
-  public void update(User user) {
-    User findUser = userRepository.findById(user.getId())
-            .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
+  public void update(UserDto userDto) {
+    User findUser = userRepository.findById(userDto.getId())
+            .orElseThrow(NotFoundUserException::new);
 
-    if (findUser.getOauth() == null || findUser.getOauth().equals("")) {
-      findUser.setPassword(encoder.encode(user.getPassword()));
-      findUser.setEmail(user.getEmail());
+    if (findUser.getLoginType() == null || findUser.getLoginType().equals("")) {
+      findUser.changePassword(encoder.encode(userDto.getPassword()));
+      findUser.changeEmail(userDto.getEmail());
+      Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+      SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    // 세션 변경
-    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-    SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 
   @Transactional(readOnly = true)
   public User findUser(String username) {
-    return userRepository.findByUsername(username).orElseGet(User::new);
+    return userRepository.findByUsername(username).orElseThrow(NotFoundUserException::new);
+  }
+
+  @Transactional(readOnly = true)
+  public User findByUserId(Long userId) {
+    return userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
   }
 }

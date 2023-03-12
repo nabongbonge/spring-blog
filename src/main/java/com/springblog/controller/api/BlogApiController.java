@@ -1,51 +1,51 @@
 package com.springblog.controller.api;
 
 import com.springblog.config.auth.PrincipalDetails;
-import com.springblog.domain.Blog;
-import com.springblog.domain.Reply;
-import com.springblog.dto.ReplySaveRequestDto;
+import com.springblog.dto.BlogDto;
+import com.springblog.dto.ReplyDto;
 import com.springblog.dto.ResponseDto;
 import com.springblog.service.BlogService;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/api/blog")
 @RestController
 public class BlogApiController {
 
-  @Autowired
-  private BlogService blogService;
+  private final BlogService blogService;
 
-  @PostMapping("/api/blog")
-  public ResponseDto<Integer> save(@RequestBody Blog blog, @AuthenticationPrincipal PrincipalDetails principal) {
-    blogService.write(blog, principal.getUser());
-    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  @PostMapping("/")
+  public ResponseDto<Integer> insert(@RequestBody BlogDto blogDto, @AuthenticationPrincipal PrincipalDetails principal) {
+    blogService.write(blogDto, principal.getUser().getUsername());
+    return ResponseDto.ofSuccess(1);
   }
 
-  @DeleteMapping("/api/blog/{id}")
-  public ResponseDto<Integer> delete(@PathVariable int id) {
+  @DeleteMapping("/{id}")
+  public ResponseDto<Integer> delete(@PathVariable Long id) {
     blogService.delete(id);
-    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    return ResponseDto.ofSuccess(1);
   }
 
-  @PutMapping("/api/blog/{id}")
-  public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Blog blog) {
-    blogService.update(id, blog);
-    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  @PutMapping("/{id}")
+  public ResponseDto<Integer> update(@PathVariable Long id, @RequestBody BlogDto blogDto) {
+    blogService.update(id, blogDto);
+    return ResponseDto.ofSuccess(1);
   }
 
-  @PostMapping("/api/blog/{blogId}/reply")
-  public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
-//    blogService.replyWrite(replySaveRequestDto);
-    blogService.replyWriteForNativeQuery(replySaveRequestDto);
-    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+  @PostMapping("/{blogId}/reply")
+  public ResponseDto<Integer> replySave(@RequestBody ReplyDto replyDto) {
+    blogService.replyWrite(replyDto);
+    return ResponseDto.ofSuccess(1);
   }
 
-  @DeleteMapping("/api/blog/{blogId}/reply/{replyId}")
-  public ResponseDto<Integer> replyDelete(@PathVariable int replyId) {
+  @DeleteMapping("/{blogId}/reply/{replyId}")
+  public ResponseDto<Integer> replyDelete(@PathVariable Long replyId) {
     blogService.replyDelete(replyId);
-    return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    return ResponseDto.ofSuccess(1);
   }
 }

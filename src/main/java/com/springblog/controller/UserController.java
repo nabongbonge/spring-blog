@@ -2,22 +2,25 @@ package com.springblog.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springblog.config.auth.PrincipalDetails;
 import com.springblog.config.auth.PrincipalDetailsService;
 import com.springblog.domain.User;
+import com.springblog.domain.type.LoginType;
+import com.springblog.domain.type.RoleType;
 import com.springblog.dto.KakaoProfile;
 import com.springblog.dto.OAuthTokenDto;
+import com.springblog.dto.UserDto;
+import com.springblog.execption.NotFoundUserException;
 import com.springblog.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,20 +29,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Controller
 public class UserController {
-
-  @Autowired
-  private AuthenticationManager authenticationManager;
 
   @Autowired
   private PrincipalDetailsService principalDetailsService;
 
   @Autowired
+  BCryptPasswordEncoder encoder;
+
+  @Autowired
   private UserService userService;
+
+  @Value("${oauth.password}")
+  public String oauthPassword;
 
 
   // 회원 가입 화면
@@ -109,31 +115,28 @@ public class UserController {
       e.printStackTrace();
     }
 
-    User kakaoUser = User.builder()
-            .username(kakaoProfile.getKakaoAccount().getEmail() + "_" + kakaoProfile.getId())
-            .password("dkagh12")
-            .email(kakaoProfile.getKakaoAccount().getEmail())
-            .oauth("kakao")
-            .build();
 
-    User findUSer = userService.findUser(kakaoUser.getUsername());
+    UserDto userDto = UserDto.of(null, kakaoProfile.getKakaoAccount().getEmail() + "_" + kakaoProfile.getId(),
+            oauthPassword, kakaoProfile.getKakaoAccount().getEmail(), RoleType.USER, LoginType.KAKAO);
 
-    if (findUSer.getUsername() == null) {
-      System.out.println("기존 회원이 아니기에 자동 회원가입을 진행합니다.");
-      userService.join(kakaoUser);
+
+    try {
+      User findUSer = userService.findUser(userDto.getUsername());
+    } catch (NotFoundUserException e) {
+      log.info("자동 로그인을 진행합니다.");
+      userService.join(userDto);
     }
 
-    System.out.println("자동 로그인을 진행합니다.");
-
-    UserDetails userDetails = principalDetailsService.loadUserByUsername(kakaoUser.getUsername());
+    UserDetails userDetails = principalDetailsService.loadUserByUsername(userDto.getUsername());
     Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
     session.setAttribute("SPRING_SECURITY_CONTEXT",securityContext);
 
     // 세션 변경
-//    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), "dkagh12"));
+//    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), encoder.encode(userDto.getPassword())));
 //    SecurityContextHolder.getContext().setAuthentication(authentication);
+    // Resolved [org.springframework.security.authentication.BadCredentialsException: 자격 증명에 실패하였습니다.]
 
     return "redirect:/";
   }
