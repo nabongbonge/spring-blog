@@ -1,27 +1,20 @@
 package com.springblog.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 
-import java.sql.Timestamp;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
-import static jakarta.persistence.GenerationType.*;
-
-@Builder
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-public class Reply {
+public class Reply extends AuditingFields{
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
   @Column(name = "replyId")
-  public int id;
+  public Long id;
 
   @ManyToOne
   @JoinColumn(name = "blogId")
@@ -34,6 +27,8 @@ public class Reply {
   @Column(nullable = false, length = 200)
   public String content;
 
-  @CreationTimestamp
-  public Timestamp createDate;
+
+  public static Reply of (Long id, Blog blog, User user, String content) {
+    return new Reply(id, blog, user, content);
+  }
 }

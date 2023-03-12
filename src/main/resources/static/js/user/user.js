@@ -19,7 +19,7 @@ let index = {
 
     $.ajax({
       type: "POST",
-      url: "/auth/joinProc",
+      url: "/api/signup",
       data: JSON.stringify(data),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
@@ -27,7 +27,7 @@ let index = {
       alert("회원가입이 완료 되었습니다.");
       console.log(resp);
       location.href = "/";
-    }).fail(function (error) {
+       }).fail(function (error) {
       alert(JSON.stringify(error));
     });
   },
@@ -41,7 +41,7 @@ let index = {
 
     $.ajax({
       type: "PUT",
-      url: "/user",
+      url: "/api/user",
       data: JSON.stringify(data),
       contentType: "application/json; charset=utf-8"
     }).done(function () {

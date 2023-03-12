@@ -1,26 +1,25 @@
 package com.springblog.domain;
 
+import com.springblog.domain.type.LoginType;
+import com.springblog.domain.type.RoleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Timestamp;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
-import static jakarta.persistence.GenerationType.*;
-
-@Builder
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
+@AllArgsConstructor(access = PRIVATE)
 @Entity
-public class User {
+public class User extends AuditingFields {
 
-  @Id @GeneratedValue(strategy = IDENTITY)
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
   @Column(name = "userId")
-  private int id;
+  private Long id;
 
   @Column(unique = true, nullable = false, length = 100)
   private String username;
@@ -34,8 +33,29 @@ public class User {
   @Enumerated(EnumType.STRING)
   private RoleType role;
 
-  private String oauth; // kakao, google
+  private LoginType loginType;
 
-  @CreationTimestamp
-  private Timestamp createDate;
+  public void changePassword(String password) {
+    this.password = password;
+  }
+
+  public void changeEmail(String email) {
+    this.email = email;
+  }
+
+  public static User of(Long id, String username, String password, String email, RoleType role, LoginType loginType) {
+    return new User(id, username, password, email, role, loginType);
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", email='" + email + '\'' +
+            ", role=" + role +
+            ", loginType=" + loginType +
+            '}';
+  }
 }
